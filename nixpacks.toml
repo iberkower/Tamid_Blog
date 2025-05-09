@@ -1,0 +1,26 @@
+# nixpacks.toml
+#
+# 1) Setup: install Node.js
+[phases.setup]
+nodejs.setup = "18.x"
+
+# 2) Install dependencies for both packages
+[phases.install]
+run = [
+  "cd frontend && npm ci",
+  "cd backend  && npm ci"
+]
+
+# 3) Build only the frontend
+[phases.build]
+run = [
+  "cd frontend && npm run build"
+]
+
+# 4) Start the backend (which will also need to serve or proxy your built frontend, if desired)
+[phases.start]
+run = "cd backend && npm start"
+
+# 5) Tell Fly which port your app is on
+[defaults]
+port = 4000
