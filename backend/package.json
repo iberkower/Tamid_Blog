@@ -8,7 +8,8 @@
     "dev": "nodemon src/app.js",
     "test": "jest",
     "migrate": "node scripts/migrate.js",
-    "seed": "node scripts/seed.js"
+    "seed": "node scripts/seed.js",
+    "build": "echo 'No build step needed for Node.js'"
   },
   "keywords": [],
   "author": "",
@@ -26,5 +27,8 @@
     "jest": "^29.5.0",
     "nodemon": "^2.0.22",
     "supertest": "^6.3.3"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }
