@@ -3,7 +3,7 @@
 # 1) Setup: install Node.js
 [phases.setup]
 nodejs.setup = "18.x"
-nixPkgs = ["nodejs", "npm"]
+nixPkgs = ["nodejs_20", "nodePackages.npm"]
 
 # 2) Install dependencies for both packages
 [phases.install]
@@ -21,7 +21,7 @@ cmd = "node src/app.js"
 
 # 5) Tell Fly which port your app is on
 [defaults]
-port = 4000
+port = 10000
 
 [deploy]
 startCommand = "node src/app.js"
