@@ -19,6 +19,8 @@ services:
         value: https://tamid-blog-frontend.onrender.com
       - key: PORT
         value: 10000
+    healthCheckPath: /health
+    autoDeploy: true
 
   # Frontend service
   - type: static
@@ -31,4 +33,5 @@ services:
     staticPublishPath: build
     envVars:
       - key: REACT_APP_API_URL
-        value: https://tamid-blog-backend.onrender.com 
+        value: https://tamid-blog-backend.onrender.com
+    autoDeploy: true 

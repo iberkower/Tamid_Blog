@@ -9,7 +9,8 @@
     "test": "jest",
     "migrate": "node scripts/migrate.js",
     "seed": "node scripts/seed.js",
-    "build": "echo 'No build step needed for Node.js'"
+    "build": "echo 'No build step needed for Node.js'",
+    "postinstall": "npm run build"
   },
   "keywords": [],
   "author": "",
@@ -29,7 +30,7 @@
     "supertest": "^6.3.3"
   },
   "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=10.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }
