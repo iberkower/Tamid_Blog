@@ -8,6 +8,7 @@ services:
     rootDir: backend
     buildCommand: npm install
     startCommand: node src/app.js
+    dockerfilePath: null  # Explicitly specify no Dockerfile
     envVars:
       - key: NODE_ENV
         value: production
@@ -31,6 +32,7 @@ services:
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: build
+    dockerfilePath: null  # Explicitly specify no Dockerfile
     envVars:
       - key: REACT_APP_API_URL
         value: https://tamid-blog-backend.onrender.com
