@@ -3,8 +3,14 @@ services:
   - type: web
     name: tamid-blog-backend
     env: node
-    buildCommand: cd backend && npm install
-    startCommand: cd backend && npm start
+    plan: free
+    region: oregon
+    buildCommand: |
+      cd backend
+      npm install
+    startCommand: |
+      cd backend
+      node src/app.js
     envVars:
       - key: NODE_ENV
         value: production
@@ -14,13 +20,24 @@ services:
         sync: false
       - key: CORS_ORIGIN
         value: https://tamid-blog-frontend.onrender.com
+      - key: PORT
+        value: 10000
 
   # Frontend service
   - type: web
     name: tamid-blog-frontend
-    env: static
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: frontend/build
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: |
+      cd frontend
+      npm install
+      npm run build
+    startCommand: |
+      cd frontend
+      npx serve -s build -l 10000
     envVars:
       - key: REACT_APP_API_URL
-        value: https://tamid-blog-backend.onrender.com 
+        value: https://tamid-blog-backend.onrender.com
+      - key: PORT
+        value: 10000 
