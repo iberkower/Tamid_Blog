@@ -5,12 +5,9 @@ services:
     env: node
     plan: free
     region: oregon
-    buildCommand: |
-      cd backend
-      npm install
-    startCommand: |
-      cd backend
-      node src/app.js
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node src/app.js
     envVars:
       - key: NODE_ENV
         value: production
@@ -24,20 +21,14 @@ services:
         value: 10000
 
   # Frontend service
-  - type: web
+  - type: static
     name: tamid-blog-frontend
-    env: node
+    env: static
     plan: free
     region: oregon
-    buildCommand: |
-      cd frontend
-      npm install
-      npm run build
-    startCommand: |
-      cd frontend
-      npx serve -s build -l 10000
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: build
     envVars:
       - key: REACT_APP_API_URL
-        value: https://tamid-blog-backend.onrender.com
-      - key: PORT
-        value: 10000 
+        value: https://tamid-blog-backend.onrender.com 
