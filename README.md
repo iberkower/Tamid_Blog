@@ -161,8 +161,8 @@ REACT_APP_API_URL=http://localhost:5000
 
 3. **Deployment**
    - Challenge: Deploying both frontend and backend in sync
-   - Solution: Implemented Docker
-   - Learning: Better understanding of using Docker to deploy frontend and backend in sync on Render
+   - Solution: Implemented direct deployment on Render.com with automatic build and deploy
+   - Learning: Better understanding of cloud platform deployment and environment configuration
 
 
 ### Future Improvements
