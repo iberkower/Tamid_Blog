@@ -248,8 +248,8 @@ REACT_APP_API_URL=https://tamid-blog-backend.onrender.com
 5. Health checks ensure services are running correctly
 
 ### Live Demo
-- Frontend: [https://tamid-blog-frontend.onrender.com](https://tamid-blog-frontend.onrender.com)
-- Backend: [https://tamid-blog-backend.onrender.com](https://tamid-blog-backend.onrender.com)
+- Frontend: [https://tamid-blog-2.onrender.com/](https://tamid-blog-2.onrender.com/)
+- Backend: [https://tamid-blog-1.onrender.com/](https://tamid-blog-1.onrender.com/)
 
 ### Video Demo
 [https://www.youtube.com/watch?v=7NwgkDZHYF0](https://www.youtube.com/watch?v=7NwgkDZHYF0) A video demonstration of the application will be available here, showcasing:
