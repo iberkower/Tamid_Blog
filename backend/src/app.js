@@ -91,16 +91,36 @@ let retryCount = 0;
 
 const connectWithRetry = async () => {
   try {
+    console.log('Attempting to connect to MongoDB...');
+    console.log('MongoDB URI:', process.env.MONGO_URI ? 'URI is set' : 'URI is not set');
+
     await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000,
-      retryWrites: true
+      serverSelectionTimeoutMS: 30000, // Increase timeout to 30 seconds
+      socketTimeoutMS: 45000, // Increase socket timeout
+      connectTimeoutMS: 30000, // Increase connection timeout
+      retryWrites: true,
+      maxPoolSize: 10, // Limit connection pool size
+      minPoolSize: 5, // Maintain minimum connections
+      heartbeatFrequencyMS: 10000, // Check connection health more frequently
+      family: 4 // Force IPv4
     });
-    console.log('Connected to MongoDB');
+
+    console.log('Connected to MongoDB successfully');
     retryCount = 0; // Reset retry count on successful connection
+
+    // Log connection state
+    console.log('MongoDB connection state:', mongoose.connection.readyState);
+    console.log('MongoDB connection host:', mongoose.connection.host);
+
   } catch (err) {
-    console.error('MongoDB connection error:', err);
+    console.error('MongoDB connection error:', {
+      message: err.message,
+      name: err.name,
+      code: err.code,
+      stack: err.stack
+    });
     retryCount++;
 
     if (retryCount >= MAX_RETRIES) {
@@ -112,6 +132,9 @@ const connectWithRetry = async () => {
     setTimeout(connectWithRetry, 5000);
   }
 };
+
+// Call connect immediately
+connectWithRetry();
 
 // Start server with graceful shutdown
 const PORT = process.env.PORT || 5001; // Match the port in Dockerfile
