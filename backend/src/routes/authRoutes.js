@@ -11,15 +11,26 @@ router.post('/signup', [
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
 ], async (req, res) => {
     try {
+        // Log request body (excluding password)
+        console.log('Signup request:', { ...req.body, password: '[REDACTED]' });
+
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
+            console.log('Validation errors:', errors.array());
             return res.status(400).json({ errors: errors.array() });
         }
 
         const { name, email, password } = req.body;
-        const existingUser = await User.findOne({ email });
 
+        // Check if JWT_SECRET is set
+        if (!process.env.JWT_SECRET) {
+            console.error('JWT_SECRET is not set in environment variables');
+            return res.status(500).json({ error: 'Server configuration error' });
+        }
+
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
+            console.log('Email already registered:', email);
             return res.status(400).json({ error: 'Email already registered' });
         }
 
@@ -29,13 +40,16 @@ router.post('/signup', [
             passwordHash: password
         });
 
+        console.log('Attempting to save new user:', { name, email });
         await user.save();
+        console.log('User saved successfully');
 
         const token = jwt.sign(
             { userId: user._id },
             process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
+        console.log('JWT token generated successfully');
 
         return res.status(201).json({
             token,
@@ -46,8 +60,15 @@ router.post('/signup', [
             }
         });
     } catch (error) {
-        console.error('Signup error:', error);
-        return res.status(500).json({ error: 'Server error during signup' });
+        console.error('Detailed signup error:', {
+            message: error.message,
+            stack: error.stack,
+            name: error.name
+        });
+        return res.status(500).json({
+            error: 'Server error during signup',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
 });
 
