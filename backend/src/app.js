@@ -20,17 +20,50 @@ const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || [
+  origin: [
     'http://localhost:3000',
     'http://localhost:3001',
-    'https://tamid-blog-frontend.onrender.com'
+    'https://tamid-blog-frontend.onrender.com',
+    'https://tamid-blog-1-z3wm.onrender.com',
+    'https://tamid-blog-2.onrender.com'  // Add your new frontend domain
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 };
 
+// Apply CORS before other middleware
 app.use(cors(corsOptions));
+
+// Add CORS headers middleware as a backup
+app.use((req, res, next) => {
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://tamid-blog-frontend.onrender.com',
+    'https://tamid-blog-1-z3wm.onrender.com',
+    'https://tamid-blog-2.onrender.com'
+  ];
+
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
+
+  next();
+});
+
 app.use(express.json());
 
 // API routes
