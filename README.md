@@ -159,6 +159,11 @@ REACT_APP_API_URL=http://localhost:5000
    - Solution: Implemented custom hooks and context API
    - Learning: Better understanding of React's state management patterns
 
+3. **Deployment**
+   - Challenge: Deploying both frontend and backend in sync
+   - Solution: Implemented Docker
+   - Learning: Better understanding of using Docker to deploy frontend and backend in sync on Render
+
 
 ### Future Improvements
 
@@ -172,9 +177,8 @@ REACT_APP_API_URL=http://localhost:5000
 2. **Technical Improvements**
    - Implement WebSocket for real-time updates
    - Add Redis caching for better performance
-   - Implement rate limiting
    - Add image upload functionality
-   - Implement pagination for posts
+   - Nicer looking posts
 
 3. **User Experience**
    - Dark mode support
@@ -201,17 +205,58 @@ For detailed API documentation, see [docs/api_spec.md](docs/api_spec.md).
 
 ## Deployment
 
-The application is configured for deployment to:
-- Backend: Heroku
-- Frontend: Netlify
+The application is deployed using Render.com for both frontend and backend services. The deployment is configured using a `render.yaml` file in the root directory.
 
-The GitHub Actions workflow in `.github/workflows/ci.yml` handles:
-- Automatic deployment
-- Environment variable management
+### Deployment Architecture
+- **Backend Service**
+  - Node.js application running on Render.com
+  - Environment: Node.js
+  - Region: Oregon
+  - Auto-deploy enabled
+  - Health check endpoint at `/health`
+  - Environment variables managed through Render dashboard
+
+- **Frontend Service**
+  - Static React application hosted on Render.com
+  - Environment: Static
+  - Region: Oregon
+  - Auto-deploy enabled
+  - Build command: `npm install && npm run build`
+  - Environment variables managed through Render dashboard
+
+### Environment Variables
+
+#### Backend Environment Variables
+```
+NODE_ENV=production
+MONGO_URI=<your_mongodb_uri>
+JWT_SECRET=<your_jwt_secret>
+CORS_ORIGIN=https://tamid-blog-frontend.onrender.com
+PORT=10000
+```
+
+#### Frontend Environment Variables
+```
+REACT_APP_API_URL=https://tamid-blog-backend.onrender.com
+```
+
+### Deployment Process
+1. Push changes to the main branch
+2. Render automatically detects changes and triggers deployment
+3. Backend service is built and deployed first
+4. Frontend service is built and deployed after backend is ready
+5. Health checks ensure services are running correctly
 
 ### Live Demo
-- Frontend: [https://college-blog.netlify.app](https://college-blog.netlify.app)
-- Backend: [https://college-blog-api.herokuapp.com](https://college-blog-api.herokuapp.com)
+- Frontend: [https://tamid-blog-frontend.onrender.com](https://tamid-blog-frontend.onrender.com)
+- Backend: [https://tamid-blog-backend.onrender.com](https://tamid-blog-backend.onrender.com)
+
+### Video Demo
+[https://www.youtube.com/watch?v=7NwgkDZHYF0](https://www.youtube.com/watch?v=7NwgkDZHYF0) A video demonstration of the application will be available here, showcasing:
+- User registration and authentication
+- Creating and managing blog posts
+- Search and filtering functionality
+- Responsive design across different devices
 
 ## Contributing
 
