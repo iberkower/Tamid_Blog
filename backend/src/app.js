@@ -52,7 +52,10 @@ app.use((err, _req, res, _next) => {
   });
 });
 
-// MongoDB connection with retry logic
+// MongoDB connection with retry logic and max retries
+const MAX_RETRIES = 5;
+let retryCount = 0;
+
 const connectWithRetry = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI, {
@@ -62,20 +65,53 @@ const connectWithRetry = async () => {
       retryWrites: true
     });
     console.log('Connected to MongoDB');
+    retryCount = 0; // Reset retry count on successful connection
   } catch (err) {
     console.error('MongoDB connection error:', err);
-    console.log('Retrying connection in 5 seconds...');
+    retryCount++;
+
+    if (retryCount >= MAX_RETRIES) {
+      console.error('Max retries reached. Exiting process...');
+      process.exit(1);
+    }
+
+    console.log(`Retrying connection in 5 seconds... (Attempt ${retryCount}/${MAX_RETRIES})`);
     setTimeout(connectWithRetry, 5000);
   }
 };
 
-connectWithRetry();
-
-// Start server
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => {
+// Start server with graceful shutdown
+const PORT = process.env.PORT || 5001; // Match the port in Dockerfile
+const server = app.listen(PORT, () => {
   console.log(`🚀 Server listening on port ${PORT}`);
 });
+
+// Graceful shutdown handling
+const gracefulShutdown = async () => {
+  console.log('Received shutdown signal. Closing connections...');
+
+  server.close(async () => {
+    console.log('HTTP server closed');
+    try {
+      await mongoose.connection.close();
+      console.log('MongoDB connection closed');
+      process.exit(0);
+    } catch (err) {
+      console.error('Error during shutdown:', err);
+      process.exit(1);
+    }
+  });
+
+  // Force close after 10 seconds
+  setTimeout(() => {
+    console.error('Could not close connections in time, forcefully shutting down');
+    process.exit(1);
+  }, 10000);
+};
+
+// Handle shutdown signals
+process.on('SIGTERM', gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {

@@ -5,9 +5,9 @@ services:
     env: node
     plan: free
     region: oregon
-    rootDir: backend
-    buildCommand: npm install
-    startCommand: node src/app.js
+    rootDir: backend  # Points to the backend directory containing package.json
+    buildCommand: npm install  # Installs dependencies in backend directory
+    startCommand: node src/app.js  # Starts the Node.js application
     dockerfilePath: null  # Explicitly specify no Dockerfile
     envVars:
       - key: NODE_ENV
@@ -29,9 +29,9 @@ services:
     env: static
     plan: free
     region: oregon
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: build
+    rootDir: frontend  # Points to the frontend directory containing package.json
+    buildCommand: npm install && npm run build  # Installs dependencies and builds the React app
+    staticPublishPath: build  # The directory containing the built static files
     dockerfilePath: null  # Explicitly specify no Dockerfile
     envVars:
       - key: REACT_APP_API_URL
